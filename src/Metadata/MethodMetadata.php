@@ -10,7 +10,7 @@ namespace Metadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class MethodMetadata implements \Serializable
+class MethodMetadata
 {
     public $class;
     public $name;
@@ -36,6 +36,23 @@ class MethodMetadata implements \Serializable
         return $this->reflection->invokeArgs($obj, $args);
     }
 
+    public function __serialize(): array
+    {
+        return [
+            $this->class,
+            $this->name
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        list($this->class, $this->name) = $data;
+
+        $this->reflection = new \ReflectionMethod($this->class, $this->name);
+        $this->reflection->setAccessible(true);
+    }
+
+    /*
     public function serialize()
     {
         return serialize(array($this->class, $this->name));
@@ -48,4 +65,5 @@ class MethodMetadata implements \Serializable
         $this->reflection = new \ReflectionMethod($this->class, $this->name);
         $this->reflection->setAccessible(true);
     }
+    */
 }

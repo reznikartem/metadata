@@ -10,7 +10,7 @@ namespace Metadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ClassMetadata implements \Serializable
+class ClassMetadata
 {
     public $name;
     public $reflection;
@@ -56,6 +56,31 @@ class ClassMetadata implements \Serializable
         return true;
     }
 
+    public function __serialize(): array
+    {
+        return [
+            $this->name,
+            $this->methodMetadata,
+            $this->propertyMetadata,
+            $this->fileResources,
+            $this->createdAt,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        list(
+            $this->name,
+            $this->methodMetadata,
+            $this->propertyMetadata,
+            $this->fileResources,
+            $this->createdAt
+            ) = $data;
+
+        $this->reflection = new \ReflectionClass($this->name);
+    }
+
+    /*
     public function serialize()
     {
         return serialize(array(
@@ -79,4 +104,5 @@ class ClassMetadata implements \Serializable
 
         $this->reflection = new \ReflectionClass($this->name);
     }
+    */
 }

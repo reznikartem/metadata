@@ -10,7 +10,7 @@ namespace Metadata;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class PropertyMetadata implements \Serializable
+class PropertyMetadata
 {
     public $class;
     public $name;
@@ -44,17 +44,17 @@ class PropertyMetadata implements \Serializable
         $this->reflection->setValue($obj, $value);
     }
 
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize(array(
+        return [
             $this->class,
             $this->name,
-        ));
+        ];
     }
 
-    public function unserialize($str)
+    public function __unserialize(array $data): void
     {
-        list($this->class, $this->name) = unserialize($str);
+        list($this->class, $this->name) = $data;
 
         $this->reflection = new \ReflectionProperty($this->class, $this->name);
         $this->reflection->setAccessible(true);
